@@ -48,3 +48,4 @@
     dest: /etc/tmpfiles.d/redis.conf
     mode: 0644
   become: yes
+  when: gitlab_systemd_check | succeeded

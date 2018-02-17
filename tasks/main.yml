@@ -1,5 +1,10 @@
 ---
 
+- name: check for systemd
+  command: dpkg -L systemd
+  register: gitlab_systemd_check
+  ignore_errors: yes
+
 - import_tasks: dependencies.yml
 
 - name: get current go version
@@ -19,25 +24,9 @@
 
 - import_tasks: setup.yml
 
-- stat:
-    path: /home/git/gitlab-shell/
-  register: gitlab_shell_installation
+- import_tasks: gitlab-shell.yml
 
-- import_tasks: gitlab-shell-install.yml
-  when: not gitlab_shell_installation.stat.exists
-
-- import_tasks: gitlab-shell-update.yml
-  when: gitlab_shell_installation.stat.exists
-
-- stat:
-    path: /home/git/gitlab-workhorse/
-  register: gitlab_workhorse_installation
-
-- import_tasks: gitlab-workhorse-install.yml
-  when: not gitlab_workhorse_installation.stat.exists
-
-- import_tasks: gitlab-workhorse-update.yml
-  when: gitlab_workhorse_installation.stat.exists
+- import_tasks: gitlab-workhorse.yml
 
 - name: check init
   command: mysql -NB -h"{{ gitlab_mysql_host }}" -u"{{ gitlab_mysql_user }}" -p"{{ gitlab_mysql_pass }}" "{{ gitlab_mysql_db }}" -e 'show tables'
@@ -46,15 +35,7 @@
 - import_tasks: init.yml
   when: gitlab_mysql_output.stdout == ''
 
-- stat:
-    path: /home/git/gitaly/
-  register: gitlab_gitaly_installation
-
-- import_tasks: gitaly-install.yml
-  when: not gitlab_gitaly_installation.stat.exists
-
-- import_tasks: gitaly-update.yml
-  when: gitlab_gitaly_installation.stat.exists
+- import_tasks: gitaly.yml
 
 - import_tasks: assets.yml
 

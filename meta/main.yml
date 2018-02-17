@@ -20,7 +20,7 @@ galaxy_info:
     - development
 dependencies:
   - src: NINEJKH.libre2
-    version: 0.1.1
+    version: 0.1.2
   - src: NINEJKH.git
     version: 0.1.1
   - src: NINEJKH.ruby
