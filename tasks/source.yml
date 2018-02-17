@@ -6,6 +6,6 @@
     repo: 'https://gitlab.com/gitlab-org/gitlab-ce.git'
     dest: /home/git/gitlab
     version: "{{ gitlab_version }}"
-    update: no
+    update: yes
   become: yes
   become_user: git
