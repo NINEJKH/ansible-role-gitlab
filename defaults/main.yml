@@ -1,0 +1,23 @@
+---
+
+go_version: 1.8.5
+
+gitlab_version: 9-3-stable
+
+gitlab_fqdn: gitlab
+
+gitlab_root_email: root@gitlab
+
+gitlab_root_password: foobar
+
+gitlab_unicorn_worker_processes: 3
+
+gitlab_mysql_db: gitlabhq_production
+
+gitlab_mysql_user: git
+
+gitlab_mysql_pass: ''
+
+gitlab_mysql_host: 127.0.0.1
+
+gitlab_enable_ssl: yes

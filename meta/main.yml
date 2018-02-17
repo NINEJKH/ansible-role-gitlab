@@ -1,0 +1,31 @@
+---
+
+galaxy_info:
+  author: Gunter Grodotzki
+  description: Installs Gitlab on Debian-like systems.
+  company: 9JKH (Pty) Ltd.
+  license: MIT
+  min_ansible_version: 2.4
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+        - trusty
+    - name: Debian
+      versions:
+        - stretch
+        - jessie
+  galaxy_tags:
+    - system
+    - development
+dependencies:
+  - src: NINEJKH.libre2
+    version: 0.1.1
+  - src: NINEJKH.git
+    version: 0.1.1
+  - src: NINEJKH.ruby
+    version: 0.1.1
+  - src: lifeofguenter.nodejs
+    version: 8.0.0
+  - src: lifeofguenter.nginx
+    version: 1.2.1

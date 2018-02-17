@@ -1,0 +1,50 @@
+---
+
+- name: install redis-server
+  apt:
+    name: redis-server
+    default_release: "{{ ansible_distribution_release }}-backports"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: set port (disable tcp)
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^port '
+    line: 'port 0'
+  become: yes
+  notify: restart_redis
+
+- name: set unixsocket
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^#?\s*unixsocket '
+    line: 'unixsocket /run/redis/redis.sock'
+  become: yes
+  notify: restart_redis
+
+- name: set unixsocket
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^#?\s*unixsocketperm '
+    line: 'unixsocketperm 770'
+  become: yes
+  notify: restart_redis
+
+- name: create socket dir
+  file:
+    path: /run/redis/
+    state: directory
+    owner: redis
+    group: redis
+    mode: 0755
+  become: yes
+
+- name: add socket dir to tmpfiles
+  copy:
+    src: redis/tmpfiles.conf
+    dest: /etc/tmpfiles.d/redis.conf
+    mode: 0644
+  become: yes

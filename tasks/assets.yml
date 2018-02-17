@@ -1,0 +1,22 @@
+---
+
+- name: yarn
+  command: yarn install --production --pure-lockfile
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
+
+- name: compile assets
+  command: bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
+
+- name: compile gettext
+  command: bundle exec rake gettext:compile RAILS_ENV=production
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git

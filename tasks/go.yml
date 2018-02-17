@@ -1,0 +1,20 @@
+---
+
+- name: fetch go
+  unarchive:
+    src: https://storage.googleapis.com/golang/go{{ go_version }}.linux-amd64.tar.gz
+    dest: /usr/local
+    remote_src: True
+  become: yes
+
+- name: create symlinks
+  file:
+    src: /usr/local/go/bin/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    state: link
+    force: yes
+  with_items:
+    - go
+    - godoc
+    - gofmt
+  become: yes

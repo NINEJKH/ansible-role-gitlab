@@ -1,0 +1,17 @@
+/home/git/gitlab/log/*.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    notifempty
+    copytruncate
+}
+
+/home/git/gitlab-shell/gitlab-shell.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    notifempty
+    copytruncate
+}

@@ -1,0 +1,286 @@
+production: &base
+  #
+  # 1. GitLab app settings
+  # ==========================
+
+  ## GitLab settings
+  gitlab:
+    host: {{ gitlab_fqdn }}
+    port: 443
+    https: true
+
+    trusted_proxies:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+
+    ## Email settings
+    # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
+    # email_enabled: true
+    # Email address used in the "From" field in mails sent by GitLab
+    email_from: git@{{ gitlab_fqdn }}
+    email_display_name: {{ gitlab_fqdn }}
+    email_reply_to: noreply@{{ gitlab_fqdn }}
+    email_subject_suffix: ''
+
+    # default_can_create_group: false  # default: true
+    # username_changing_enabled: false # default: true - User can change her username/namespace
+
+    ## Automatic issue closing
+    # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
+    # This happens when the commit is pushed or merged into the default branch of a project.
+    # When not specified the default issue_closing_pattern as specified below will be used.
+    # Tip: you can test your closing pattern at http://rubular.com.
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)'
+
+    ## Default project features settings
+    default_projects_features:
+      issues: true
+      merge_requests: true
+      wiki: true
+      snippets: true
+      builds: false
+      container_registry: false
+
+    ## Webhook settings
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
+
+    ## Repository downloads directory
+    # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
+    # The default is 'shared/cache/archive/' relative to the root of the Rails app.
+    # repository_downloads_path: shared/cache/archive/
+
+  ## Reply by email
+  # Allow users to comment on issues and merge requests by replying to notification emails.
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
+  incoming_email:
+    enabled: false
+
+  ## Build Artifacts
+  artifacts:
+    enabled: true
+
+  ## Git LFS
+  lfs:
+    enabled: true
+
+  ## Gravatar
+  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
+  gravatar:
+    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
+
+  ## Auxiliary jobs
+  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
+  cron_jobs:
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
+    # Execute scheduled triggers
+    pipeline_schedule_worker:
+      cron: "19 * * * *"
+    # Remove expired build artifacts
+    expire_build_artifacts_worker:
+      cron: "50 * * * *"
+    # Periodically run 'git fsck' on all repositories. If started more than
+    # once per hour you will have concurrent 'git fsck' jobs.
+    repository_check_worker:
+      cron: "20 * * * *"
+    # Send admin emails once a week
+    admin_email_worker:
+      cron: "0 0 * * 0"
+
+    # Remove outdated repository archives
+    repository_archive_cache_worker:
+      cron: "0 * * * *"
+
+  registry:
+    enabled: false
+
+  #
+  # 2. GitLab CI settings
+  # ==========================
+
+  gitlab_ci:
+    # Default project notifications settings:
+    #
+    # Send emails only on broken builds (default: true)
+    # all_broken_builds: true
+    #
+    # Add pusher to recipients list (default: false)
+    # add_pusher: true
+
+    # The location where build traces are stored (default: builds/). Relative paths are relative to Rails.root
+    # builds_path: builds/
+
+  #
+  # 3. Auth settings
+  # ==========================
+
+  ldap:
+    enabled: false
+
+  omniauth:
+    enabled: false
+
+  # Shared file storage settings
+  shared:
+    # path: /mnt/gitlab # Default: shared
+
+  #
+  # 4. Advanced settings
+  # ==========================
+
+  ## Repositories settings
+  repositories:
+    # Paths where repositories can be stored. Give the canonicalized absolute pathname.
+    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    storages: # You must have at least a `default` storage path.
+      default:
+        path: /home/git/repositories/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+
+{% if gitlab_backup_provider is defined %}
+  ## Backup settings
+  backup:
+    path: "tmp/backups"
+    keep_time: 43200  
+    # pg_schema: public     # default: nil, it means that all schemas will be backed up
+    upload:
+      connection:
+        provider: {{ gitlab_backup_provider }}
+        {% if gitlab_backup_region is defined %}
+        region: {{ gitlab_backup_region }}
+        {% endif %}
+        {% if gitlab_backup_aws_access_key_id is defined %}
+        aws_access_key_id: {{ gitlab_backup_aws_access_key_id }}
+        {% endif %}
+        {% if gitlab_backup_aws_secret_access_key is defined %}
+        aws_secret_access_key: '{{ gitlab_backup_aws_secret_access_key }}'
+        {% endif %}
+      {% if gitlab_backup_remote_directory is defined %}
+      remote_directory: '{{ gitlab_backup_remote_directory }}'
+      {% endif %}
+{% endif %}
+
+  ## GitLab Shell settings
+  gitlab_shell:
+    path: /home/git/gitlab-shell/
+
+    # REPOS_PATH MUST NOT BE A SYMLINK!!!
+    hooks_path: /home/git/gitlab-shell/hooks/
+
+    # File that contains the secret key for verifying access for gitlab-shell.
+    # Default is '.gitlab_shell_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_shell_secret
+
+    # Git over HTTP
+    upload_pack: true
+    receive_pack: true
+
+    # Git import/fetch timeout
+    # git_timeout: 800
+
+    # If you use non-standard ssh port you need to specify it
+    # ssh_port: 22
+
+  workhorse:
+    # File that contains the secret key for verifying access for gitlab-workhorse.
+    # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
+
+  ## Git settings
+  # CAUTION!
+  # Use the default values unless you really know what you are doing
+  git:
+    bin_path: /usr/local/bin/git
+    # The next value is the maximum memory size grit can use
+    # Given in number of bytes per git object (e.g. a commit)
+    # This value can be increased if you have very large commits
+    max_size: 20971520 # 20.megabytes
+    # Git timeout to read a commit, in seconds
+    timeout: 10
+
+  #
+  # 5. Extra customization
+  # ==========================
+
+  extra:
+    ## Google analytics. Uncomment if you want it
+    # google_analytics_id: '_your_tracking_id'
+
+    ## Piwik analytics.
+    # piwik_url: '_your_piwik_url'
+    # piwik_site_id: '_your_piwik_site_id'
+
+  rack_attack:
+    git_basic_auth:
+      # Rack Attack IP banning enabled
+      # enabled: true
+      #
+      # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
+      # ip_whitelist: ["127.0.0.1"]
+      #
+      # Limit the number of Git HTTP authentication attempts per IP
+      # maxretry: 10
+      #
+      # Reset the auth attempt counter per IP after 60 seconds
+      # findtime: 60
+      #
+      # Ban an IP for one hour (3600s) after too many auth attempts
+      # bantime: 3600
+
+development:
+  <<: *base
+
+test:
+  <<: *base
+  gravatar:
+    enabled: true
+  lfs:
+    enabled: false
+  gitlab:
+    host: localhost
+    port: 80
+
+    # When you run tests we clone and setup gitlab-shell
+    # In order to setup it correctly you need to specify
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME
+  pages:
+    path: tmp/tests/pages
+  repositories:
+    storages:
+      default:
+        path: tmp/tests/repositories/
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+  gitaly:
+    enabled: true
+  backup:
+    path: tmp/tests/backups
+  gitlab_shell:
+    path: tmp/tests/gitlab-shell/
+    hooks_path: tmp/tests/gitlab-shell/hooks/
+  issues_tracker:
+    redmine:
+      title: "Redmine"
+      project_url: "http://redmine/projects/:issues_tracker_id"
+      issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
+      new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+  ldap:
+    enabled: false
+    servers:
+      main:
+        label: ldap
+        host: 127.0.0.1
+        port: 3890
+        uid: 'uid'
+        method: 'plain' # "tls" or "ssl" or "plain"
+        base: 'dc=example,dc=com'
+        user_filter: ''
+        group_base: 'ou=groups,dc=example,dc=com'
+        admin_group: ''
+
+staging:
+  <<: *base

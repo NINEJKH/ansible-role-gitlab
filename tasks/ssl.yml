@@ -1,0 +1,48 @@
+---
+
+- name: generate dhparam
+  command: openssl dhparam -out /etc/nginx/dhparam.pem 4096
+  args:
+    creates: /etc/nginx/dhparam.pem
+  become: yes
+
+- name: create letsencrypt www-dir
+  file:
+    path: /var/www/gitlab/
+    state: directory
+  become: yes
+
+- stat:
+    path: /etc/letsencrypt/live/{{ gitlab_fqdn }}/fullchain.pem
+  register: gitlab_lecert
+  become: yes
+
+- import_tasks: ssl-adhoc.yml
+  when: not gitlab_lecert.stat.exists
+
+- cron:
+    cron_file: letsencrypt
+    user: root
+    name: MAILTO
+    env: yes
+    value: "{{ gitlab_root_email }}"
+  become: yes
+
+- cron:
+    cron_file: letsencrypt
+    user: root
+    name: MAILFROM
+    env: yes
+    value: "{{ ansible_hostname }}@{{ gitlab_fqdn }}"
+  become: yes
+
+- name: add cronjob
+  cron:
+    cron_file: letsencrypt
+    user: root
+    name: "lecert {{ gitlab_fqdn }}"
+    minute: 22
+    hour: 2
+    day: 15
+    job: "{{ gitlab_certbot_cmd }} && systemctl reload nginx"
+  become: yes

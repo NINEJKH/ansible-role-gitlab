@@ -1,0 +1,156 @@
+---
+
+- name: copy over configs
+  template:
+    src: "{{ item }}"
+    dest: /home/git/gitlab/config/{{ item }}
+    mode: 0644
+  with_items:
+    - gitlab.yml
+    - resque.yml
+    - unicorn.rb
+  become: yes
+  become_user: git
+
+- name: copy over rack_attack.rb
+  template:
+    src: rack_attack.rb
+    dest: /home/git/gitlab/config/initializers/rack_attack.rb
+    mode: 0644
+  become: yes
+  become_user: git
+
+- name: copy over sensitive configs
+  template:
+    src: "{{ item }}"
+    dest: /home/git/gitlab/config/{{ item }}
+    mode: 0600
+  with_items:
+    - secrets.yml
+    - database.yml
+  become: yes
+  become_user: git
+
+- name: fix perms log/
+  file:
+    path: /home/git/gitlab/log/
+    state: directory
+    mode: 'u+rwX,go-w'
+    owner: git
+    group: git
+  become: yes
+
+- name: fix perms tmp/
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 'u+rwX'
+    owner: git
+    group: git
+  with_items:
+    - /home/git/gitlab/tmp/
+    - /home/git/gitlab/tmp/pids/
+    - /home/git/gitlab/tmp/sockets/
+  become: yes
+
+- name: create public/uploads
+  file:
+    path: /home/git/gitlab/public/uploads
+    state: directory
+    mode: 0700
+    owner: git
+    group: git
+  become: yes
+
+- name: create repositories folder
+  file:
+    path: /home/git/repositories
+    state: directory
+    mode: 'ug+rwX,o-rwx'
+    owner: git
+    group: git
+  become: yes
+
+- name: create repositories folder
+  file:
+    path: /home/git/repositories
+    state: directory
+    mode: 'g+s'
+    owner: git
+    group: git
+  become: yes
+
+- name: fix perms builds/
+  file:
+    path: /home/git/gitlab/builds/
+    state: directory
+    mode: 'u+rwX'
+  become: yes
+
+- name: fix perms shared/artifacts/
+  file:
+    path: /home/git/gitlab/shared/artifacts/
+    state: directory
+    mode: 'u+rwX'
+  become: yes
+
+- name: fix perms shared/pages/
+  file:
+    path: /home/git/gitlab/shared/pages/
+    state: directory
+    mode: 'ug+rwX'
+  become: yes
+
+- name: set core.autocrlf
+  git_config:
+    name: core.autocrlf
+    value: input
+    scope: global
+  become: yes
+  become_user: git
+
+- name: disable git.auto
+  git_config:
+    name: gc.auto
+    value: 0
+    scope: global
+  become: yes
+  become_user: git
+
+- name: set repack.writeBitmaps
+  git_config:
+    name: repack.writeBitmaps
+    value: 'true'
+    scope: global
+  become: yes
+  become_user: git
+
+- name: run bundler
+  command: bundle install --deployment --without development test postgres kerberos
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
+
+- name: add logrotate
+  copy:
+    src: logrotate
+    dest: /etc/logrotate.d/gitlab
+    mode: 0644
+  become: yes
+
+- name: copy over default
+  template:
+    src: default.sh
+    dest: /etc/default/gitlab
+    mode: 0644
+  become: yes
+
+- name: copy over init
+  copy:
+    remote_src: true
+    src: /home/git/gitlab/lib/support/init.d/gitlab
+    dest: /etc/init.d/gitlab
+    mode: 'a+x'
+  become: yes
+  notify: enable_gitlab

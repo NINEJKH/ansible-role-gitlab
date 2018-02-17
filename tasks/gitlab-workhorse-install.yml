@@ -1,0 +1,8 @@
+---
+
+- name: install gitlab-workhorse
+  command: bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
