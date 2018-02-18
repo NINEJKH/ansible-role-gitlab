@@ -12,8 +12,12 @@ env:
 # Install ansible
 addons:
   apt:
+    sources:
+      - mysql-5.7-trusty          
     packages:
-    - python-setuptools
+      - python-setuptools
+      - mysql-server
+      - mysql-client
 
 services:
   - mysql
@@ -21,10 +25,13 @@ services:
 
 before_install:
   - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = 1\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('farm') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade
   - sudo service mysql restart
   - mysql -e "SELECT @@innodb_file_per_table;"
   - mysql -e "SELECT @@innodb_file_format;"
   - mysql -e "SELECT @@innodb_large_prefix;"
+  - mysql -e "SELECT VERSION();"
 
 install:
   - sudo -H easy_install pip
@@ -42,7 +49,7 @@ install:
 
 before_script:
   - mysql -e 'CREATE DATABASE gitlabhq_production;'
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('farm') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql
+#  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('farm') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql
 
 script:
   - ./test.sh
