@@ -1,0 +1,11 @@
+---
+
+- name: run bundles
+  command: bundle {{ item }} 
+  args:
+    chdir: /home/git/gitlab
+  with_items:
+    - exec rake db:migrate RAILS_ENV=production
+    - exec rake add_limits_mysql RAILS_ENV=production
+  become: yes
+  become_user: git

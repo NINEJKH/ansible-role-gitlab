@@ -1,19 +1,11 @@
 ---
 
-# this is done automatically during installs, so should only be done when upgrading
-#- name: add_limits_mysql
-#  command: bundle exec rake add_limits_mysql RAILS_ENV=production
-#  args:
-#    chdir: /home/git/gitlab
-#  become: yes
-#  become_user: git
-
 - cron:
     cron_file: gitlab
     user: git
     name: MAILTO
     env: yes
-    value: hostmaster@weheartwebsites.de
+    value: "{{ gitlab_root_email }}"
   become: yes
 
 - cron:
@@ -21,7 +13,7 @@
     user: git
     name: MAILFROM
     env: yes
-    value: "{{ ansible_hostname }}@weheartwebsites.de"
+    value: "{{ ansible_hostname }}@{{ gitlab_fqdn }}"
   become: yes
 
 - cron:

@@ -136,14 +136,10 @@
   become_user: git
   notify: restart_gitlab
 
-- name: run bundles
-  command: bundle {{ item }} 
+- name: bundle clean
+  command: bundle clean
   args:
     chdir: /home/git/gitlab
-  with_items:
-    - clean
-    - exec rake db:migrate RAILS_ENV=production
-    - exec rake add_limits_mysql RAILS_ENV=production
   become: yes
   become_user: git
 

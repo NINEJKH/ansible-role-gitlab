@@ -6,8 +6,8 @@ production: &base
   ## GitLab settings
   gitlab:
     host: {{ gitlab_fqdn }}
-    port: 443
-    https: true
+    port: {% if gitlab_enable_ssl | default(true) | bool %}443{% else %}80{% endif %}
+    https: {% if gitlab_enable_ssl | default(true) | bool %}true{% else %}false{% endif %}
 
     trusted_proxies:
       - 10.0.0.0/8
@@ -141,12 +141,12 @@ production: &base
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
 
-{% if gitlab_backup_provider is defined %}
   ## Backup settings
   backup:
     path: "tmp/backups"
     keep_time: 43200  
     # pg_schema: public     # default: nil, it means that all schemas will be backed up
+{% if gitlab_backup_provider is defined %}
     upload:
       connection:
         provider: {{ gitlab_backup_provider }}

@@ -35,6 +35,8 @@
 
 - import_tasks: gitaly.yml
 
+- import_tasks: migrations.yml
+
 - import_tasks: assets.yml
 
 - import_tasks: ssl.yml
