@@ -60,8 +60,8 @@ shift "$((OPTIND-1))"
 if [[ ! -z "${TRAVIS}" ]]; then
   unset GEM_HOME
   unset GEM_PATH
+  unset GOROOT
 fi
-
 
 if [[ -z "${TARGET_HOST}" ]]; then
   TARGET_HOST="127.0.0.1"
