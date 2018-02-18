@@ -8,8 +8,6 @@ dist: trusty
 env:
   global:
     - PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/usr/local/sbin
-    - GEM_HOME=
-    - GEM_PATH=
 
 # Install ansible
 addons:

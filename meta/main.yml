@@ -23,7 +23,7 @@ dependencies:
     version: 0.1.3
 
   - src: NINEJKH.git
-    version: 0.1.2
+    version: 0.1.3
 
   - src: NINEJKH.ruby
     version: 0.1.3
