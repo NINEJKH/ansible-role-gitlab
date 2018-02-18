@@ -8,7 +8,7 @@ gitlab_fqdn: gitlab
 
 gitlab_root_email: root@gitlab
 
-gitlab_root_password: foobar
+gitlab_root_password: Foobar_2k18
 
 gitlab_unicorn_worker_processes: 3
 

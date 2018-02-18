@@ -18,6 +18,10 @@ addons:
 services:
   - mysql
 
+before_install:
+  - printf '[mysqld]\ninnodb_large_prefix = 1\nlog_bin_trust_function_creators = 1\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
+  - sudo service mysql restart
+
 install:
   - sudo -H easy_install pip
   # http://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2

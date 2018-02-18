@@ -6,3 +6,10 @@
     chdir: /home/git/gitlab
   become: yes
   become_user: git
+
+- name: add_limits_mysql
+  command: bundle exec rake add_limits_mysql RAILS_ENV=production
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
