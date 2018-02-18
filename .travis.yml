@@ -26,12 +26,11 @@ services:
 before_install:
   - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = 1\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
   - sudo mysql_upgrade
-  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('farm') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
   - sudo service mysql restart
-  - mysql -e "SELECT @@innodb_file_per_table;"
-  - mysql -e "SELECT @@innodb_file_format;"
-  - mysql -e "SELECT @@innodb_large_prefix;"
-  - mysql -e "SELECT VERSION();"
+  - sudo mysql -e "SELECT @@innodb_file_per_table;"
+  - sudo mysql -e "SELECT @@innodb_file_format;"
+  - sudo mysql -e "SELECT @@innodb_large_prefix;"
+  - sudo mysql -e "SELECT VERSION();"
 
 install:
   - sudo -H easy_install pip
@@ -48,8 +47,8 @@ install:
   - ansible --version
 
 before_script:
-  - mysql -e 'CREATE DATABASE gitlabhq_production;'
-#  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('farm') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql
+  - sudo mysql -e "CREATE DATABASE gitlabhq_production;"
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('farm') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
 
 script:
   - ./test.sh

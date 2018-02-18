@@ -1,11 +1,12 @@
 ---
 
-# this should only ensure gitlab is installed - no updates!
+# clone + update
 - name: clone gitlab
   git:
     repo: 'https://gitlab.com/gitlab-org/gitlab-ce.git'
     dest: /home/git/gitlab
     version: "{{ gitlab_version }}"
     update: yes
+    force: yes
   become: yes
   become_user: git
