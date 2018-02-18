@@ -11,6 +11,7 @@
     - unicorn.rb
   become: yes
   become_user: git
+  notify: restart_gitlab
 
 - name: copy over rack_attack.rb
   template:
@@ -19,6 +20,7 @@
     mode: 0644
   become: yes
   become_user: git
+  notify: restart_gitlab
 
 - name: copy over sensitive configs
   template:
@@ -30,6 +32,7 @@
     - database.yml
   become: yes
   become_user: git
+  notify: restart_gitlab
 
 - name: fix perms log/
   file:
@@ -125,10 +128,22 @@
   become: yes
   become_user: git
 
-- name: run bundler
+- name: bundle install
   command: bundle install --jobs {{ ansible_processor_vcpus }} --retry 3 --deployment --without development test postgres kerberos
   args:
     chdir: /home/git/gitlab
+  become: yes
+  become_user: git
+  notify: restart_gitlab
+
+- name: run bundles
+  command: bundle {{ item }} 
+  args:
+    chdir: /home/git/gitlab
+  with_items:
+    - clean
+    - exec rake db:migrate RAILS_ENV=production
+    - exec rake add_limits_mysql RAILS_ENV=production
   become: yes
   become_user: git
 
@@ -145,6 +160,7 @@
     dest: /etc/default/gitlab
     mode: 0644
   become: yes
+  notify: restart_gitlab
 
 - name: copy over init
   copy:
@@ -153,4 +169,4 @@
     dest: /etc/init.d/gitlab
     mode: 'a+x'
   become: yes
-  notify: enable_gitlab
+  notify: restart_gitlab

@@ -1,6 +1,6 @@
 ---
 
-- name: enable_gitlab
+- name: restart_gitlab
   service:
     name: gitlab
     enabled: yes

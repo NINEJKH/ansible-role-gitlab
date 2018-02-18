@@ -18,6 +18,38 @@ $ ./test.sh -i 192.168.1.159 -u vbox
 
 ```yaml
 
+go_version: 1.8.7
+
+gitlab_version: 9-3-stable
+
+gitlab_fqdn: gitlab
+
+gitlab_root_email: root@gitlab
+
+gitlab_root_password: Foobar_2k18
+
+gitlab_unicorn_worker_processes: 3
+
+gitlab_redis_url: redis://127.0.0.1:6379
+
+gitlab_mysql_db: gitlabhq_production
+
+gitlab_mysql_user: git
+
+gitlab_mysql_pass: ''
+
+gitlab_mysql_host: 127.0.0.1
+
+gitlab_enable_ssl: yes
+
+gitlab_db_key_base:
+
+gitlab_secret_key_base:
+
+gitlab_otp_key_base:
+
+gitlab_jws_private_key:
+
 gitlab_backup_provider:
 
 gitlab_backup_region:
@@ -28,14 +60,15 @@ gitlab_backup_aws_secret_access_key:
 
 gitlab_backup_remote_directory:
 
-gitlab_db_key_base:
+```
 
-gitlab_secret_key_base:
+## Example Playbook
 
-gitlab_otp_key_base:
+```yaml
 
-gitlab_jws_private_key:
-
+- hosts: gitlabs
+  roles:
+    - { role: NINEJKH.gitlab }
 ```
 
 ## License

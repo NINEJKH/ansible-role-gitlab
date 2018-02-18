@@ -106,4 +106,8 @@ fi
 if [[ "${CONNECTION}" == "local" ]]; then
   sudo echo "127.0.0.1 gitlab" > /etc/hosts
   curl -i http://gitlab
+
+  sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+  sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 fi

@@ -6,3 +6,4 @@
     chdir: /home/git/gitlab
   become: yes
   become_user: git
+  notify: restart_gitlab
