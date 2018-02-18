@@ -20,8 +20,11 @@ services:
   - redis-server
 
 before_install:
-  - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = true\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
+  - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = 1\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
   - sudo service mysql restart
+  - mysql -e "SELECT @@innodb_file_per_table;"
+  - mysql -e "SELECT @@innodb_file_format;"
+  - mysql -e "SELECT @@innodb_large_prefix;"
 
 install:
   - sudo -H easy_install pip
