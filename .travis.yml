@@ -5,6 +5,9 @@ python: "2.7"
 sudo: required
 dist: trusty
 
+env:
+  - PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/usr/local/sbin
+
 # Install ansible
 addons:
   apt:
