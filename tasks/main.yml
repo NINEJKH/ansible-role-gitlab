@@ -5,6 +5,18 @@
   register: gitlab_systemd_check
   ignore_errors: yes
 
+- stat:
+    path: /etc/init.d/gitlab
+  register: gitlab_initd
+  become: yes
+
+- name: stop gitlab
+  service:
+    name: gitlab
+    state: stopped
+  become: yes
+  when: gitlab_initd.stat.exists
+
 - import_tasks: dependencies.yml
 
 - name: get current go version
