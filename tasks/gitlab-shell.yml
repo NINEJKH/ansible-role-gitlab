@@ -1,7 +1,7 @@
 ---
 
 - name: install gitlab-shell
-  command: bundle exec rake gitlab:shell:install REDIS_URL=unix:/run/redis/redis.sock RAILS_ENV=production SKIP_STORAGE_VALIDATION=true
+  command: bundle exec rake gitlab:shell:install REDIS_URL={{ gitlab_redis_url }} RAILS_ENV=production SKIP_STORAGE_VALIDATION=true
   args:
     chdir: /home/git/gitlab
   become: yes

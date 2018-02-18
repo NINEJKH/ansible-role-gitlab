@@ -16,8 +16,6 @@
   import_tasks: go.yml
   when: go_current.rc != 0 or not go_current.stdout | search(go_version_string_match)
 
-- import_tasks: redis.yml
-
 - import_tasks: luser.yml
 
 - import_tasks: source.yml

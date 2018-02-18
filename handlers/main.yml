@@ -1,11 +1,5 @@
 ---
 
-- name: restart_redis
-  service:
-    name: redis-server
-    state: restarted
-  become: yes
-
 - name: enable_gitlab
   service:
     name: gitlab

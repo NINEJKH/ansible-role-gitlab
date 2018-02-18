@@ -17,6 +17,7 @@ addons:
 
 services:
   - mysql
+  - redis-server
 
 install:
   - sudo -H easy_install pip
@@ -33,9 +34,9 @@ install:
   - ansible --version
 
 before_script:
-  - mysql -u root -e "set global innodb_large_prefix=1;"
-  - mysql -u root -e "set global innodb_file_format='Barracuda';"
-  - mysql -u root -e "set global innodb_file_per_table=true;"
+  - mysql -uroot -e "set global innodb_large_prefix=1;"
+  - mysql -uroot -e "set global innodb_file_format='Barracuda';"
+  - mysql -uroot -e "set global innodb_file_per_table=true;"
   - mysql -e 'CREATE DATABASE gitlabhq_production;'
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('farm') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql
 

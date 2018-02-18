@@ -14,7 +14,7 @@ test:
   url: redis://localhost:6379
 production:
   # Redis (single instance)
-  url: unix:/run/redis/redis.sock
+  url: {{ gitlab_redis_url }}
   ##
   # Redis + Sentinel (for HA)
   #

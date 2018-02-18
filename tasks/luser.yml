@@ -6,5 +6,4 @@
     comment: GitLab
     shell: /bin/bash
     home: /home/git
-    groups: redis
   become: yes
