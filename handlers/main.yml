@@ -4,4 +4,5 @@
   service:
     name: gitlab
     enabled: yes
+    restarted: yes
   become: yes
