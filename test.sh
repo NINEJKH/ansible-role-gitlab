@@ -104,8 +104,8 @@ if [[ -z "${TURBO_MODE}" ]]; then
 fi
 
 if [[ "${CONNECTION}" == "local" ]]; then
-  sudo echo "127.0.0.1 gitlab" > /etc/hosts
-  curl -i http://gitlab
+  echo "127.0.0.1 gitlab" | sudo tee -a /etc/hosts
+  curl -if http://gitlab
 
   cd /home/git/gitlab
   sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production

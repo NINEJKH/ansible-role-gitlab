@@ -33,3 +33,8 @@
     hour: 0
     job: "cd /home/git/gitlab && bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1"
   become: yes
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: yes
+  when: gitlab_systemd_check | success
