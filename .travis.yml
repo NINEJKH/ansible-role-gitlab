@@ -19,6 +19,10 @@ services:
   - mysql
   - redis-server
 
+before_install:
+  - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = true\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
+  - sudo service mysql restart
+
 install:
   - sudo -H easy_install pip
   # http://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
@@ -34,9 +38,6 @@ install:
   - ansible --version
 
 before_script:
-  - mysql -uroot -e "set global innodb_large_prefix=1;"
-  - mysql -uroot -e "set global innodb_file_format='Barracuda';"
-  - mysql -uroot -e "set global innodb_file_per_table=true;"
   - mysql -e 'CREATE DATABASE gitlabhq_production;'
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('farm') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql
 
