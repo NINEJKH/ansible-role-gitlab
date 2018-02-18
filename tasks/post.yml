@@ -1,0 +1,40 @@
+---
+
+- cron:
+    cron_file: gitlab
+    user: git
+    name: MAILTO
+    env: yes
+    value: "{{ gitlab_root_email }}"
+  become: yes
+
+- cron:
+    cron_file: gitlab
+    user: git
+    name: MAILFROM
+    env: yes
+    value: "{{ ansible_hostname }}@{{ gitlab_fqdn }}"
+  become: yes
+
+- cron:
+    cron_file: gitlab
+    user: git
+    name: PATH
+    env: yes
+    value: "/usr/local/bin:/usr/bin:/bin"
+  become: yes
+
+- name: add backup cronjob
+  cron:
+    cron_file: gitlab
+    user: git
+    name: "auto backups"
+    minute: 0
+    hour: 0
+    job: "cd /home/git/gitlab && bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1"
+  become: yes
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: yes
+  when: gitlab_systemd_check | success

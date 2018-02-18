@@ -1,0 +1,59 @@
+---
+
+- name: check for systemd
+  command: dpkg -L systemd
+  register: gitlab_systemd_check
+  ignore_errors: yes
+
+- stat:
+    path: /etc/init.d/gitlab
+  register: gitlab_initd
+  become: yes
+
+- name: stop gitlab
+  service:
+    name: gitlab
+    state: stopped
+  become: yes
+  when: gitlab_initd.stat.exists
+
+- import_tasks: dependencies.yml
+
+- name: get current go version
+  command: /usr/local/bin/go version
+  register: go_current
+  ignore_errors: yes
+
+- name: install go
+  import_tasks: go.yml
+  when: go_current.rc != 0 or not go_current.stdout | search(go_version_string_match)
+
+- import_tasks: luser.yml
+
+- import_tasks: source.yml
+
+- import_tasks: setup.yml
+
+- import_tasks: gitlab-shell.yml
+
+- import_tasks: gitlab-workhorse.yml
+
+- name: check init
+  command: mysql -NB -h"{{ gitlab_mysql_host }}" -u"{{ gitlab_mysql_user }}" -p"{{ gitlab_mysql_pass }}" "{{ gitlab_mysql_db }}" -e 'show tables'
+  register: gitlab_mysql_output
+
+- import_tasks: init.yml
+  when: gitlab_mysql_output.stdout == ''
+
+- import_tasks: gitaly.yml
+
+- import_tasks: migrations.yml
+
+- import_tasks: assets.yml
+
+- import_tasks: ssl.yml
+  when: gitlab_enable_ssl | default(true) | bool
+
+- import_tasks: vhost.yml
+
+- import_tasks: post.yml

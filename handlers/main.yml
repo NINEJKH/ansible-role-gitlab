@@ -1,0 +1,8 @@
+---
+
+- name: restart_gitlab
+  service:
+    name: gitlab
+    enabled: yes
+    state: restarted
+  become: yes

@@ -1,0 +1,17 @@
+---
+
+- name: install gitaly
+  command: bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+  args:
+    chdir: /home/git/gitlab
+  become: yes
+  become_user: git
+
+- name: fix perms
+  file:
+    path: /home/git/gitlab/tmp/sockets/private
+    state: directory
+    mode: 0700
+    owner: git
+    group: git
+  become: yes

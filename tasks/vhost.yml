@@ -1,0 +1,9 @@
+---
+
+- name: add vhost
+  template:
+    src: vhost.conf
+    dest: /etc/nginx/vhosts/gitlab.conf
+    mode: 0644
+  become: yes
+  notify: restart_nginx

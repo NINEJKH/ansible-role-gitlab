@@ -1,0 +1,9 @@
+---
+
+- name: create git user
+  user:
+    name: git
+    comment: GitLab
+    shell: /bin/bash
+    home: /home/git
+  become: yes

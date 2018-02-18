@@ -1,0 +1,51 @@
+---
+
+- hosts: all
+
+  vars:
+
+    gitlab_mysql_user: root
+
+    gitlab_mysql_pass: farm
+
+    gitlab_unicorn_worker_processes: 1
+
+    gitlab_enable_ssl: no
+
+    gitlab_db_key_base: 123456789012345678901234567890
+
+    gitlab_secret_key_base: 123456789012345678901234567890
+
+    gitlab_otp_key_base: 123456789012345678901234567890
+
+    gitlab_jws_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAu2VKyip6pJiS2JDlGNIucX7tBRMNvuQKpZyQ5zKVeMzITQcz
+      FURnjcuPPldEtta2+Iux2jUf461srJqOvvkT/Nhsigo0VNBqlY9nIdI4j9plXfXp
+      E5TIdHXRU9CAo9iq0rG08e0LYcWTi7pTFGPE/E+x/N2JKynonxI9VfDxKGMaRF9s
+      a6KfrSZBfFBNVkqHz5bW2AEkMEA80B8rSk8L3YqY9SH99xxmuQO8tK8t0QAbD/1T
+      Epc1FkV3L7APzMFZRmWOlyln2NRsA8z9DjOzlOStAEk/l30zdajgVlBPsNj2p3kN
+      Yn42JKHN5TxutBYX8dg0+zQZPIjJ3hHYVVMEMwIDAQABAoIBACdSgfcaItIXEflP
+      rkMfF4/JSoMeFGxR/cnyqJVbD/JhRkajlByKVhBy/oPeXBThyVMuPQvEygREh+FQ
+      LVP1gDQ2VdBBg+moMjVf+gwmyKem9E5bI6VwOv/1GQ+1WMkI1g+QKp/5VcIWa3eO
+      iZBlvxgSwQ6Gjhn4mU+HzEcUYAZRKW1Fm4FKZzIZDjm7Lu8bBO6nO8RM2626aKkT
+      6NWMqkKE0HZWh008W5ibe/YLM1QWb4zopUfxZ35ieIACtIPNYcGbnUQwWm3hxqqF
+      OOuPEJ3mSVZD0XwLfQZCSm0Bv/qZWILNz1JvBMYlhIbjtKcvIWO2qHhXx+4vgCUE
+      kP+8PkECgYEA3M+uSn6m37g3BlNww9h6kvIpvEANTSdyZ5Si19EddLHkcO62EVcp
+      EkAQ7iG234GtXDjlh/p2JdXOPFlWpaecOpcSiIsJoVajsL4MdYqZ6GYe/WTgIZ3G
+      2SoL+3VGYYcvSO4YeikiHuvZY09imtKGtQlso4vaxkQnpjUbaJntYNUCgYEA2UJf
+      qCBmqwYOWaMdB7x5DwtduDzyzEOD/yn5+26qq0pYNrW5QnvXw3ooL367XtqIvLFp
+      XOEzYz+vPvYCqCAL2SgAZFHdYZIyItfsP7ffj6txHIjZHMleUaAQvnhEg3PNXMgA
+      xwuFp7sMbLy3Nh3z5jSrFKfJT0j1M1ygPxpQFOcCgYBrQPFeu+AggOExUGxQpKD9
+      KWU+TDppxIRcbaUfgTJ2kUXt2PVUvOp1M+tFT9j8/YcQaY6MGwsyW4TeaWKd+ij3
+      iJP3ANn/pQ7Ddbylh1o0uQ3KdSotCe8hYrwJOzChhMFiAkyfYcVyEYs5IsE5hJLr
+      8pTzZ6YvccF0iQ00JLhZtQKBgQCsmiCoz2UBhkQsTnwnw0JiA2OnlTRHt3PMairh
+      6B/LCbtfa6wM95qJACmg4gw15WQwlLniQj+zH8s4N/YQX7VKBo+ZI7i/ZYhTSju0
+      u33vBANO6iGizxARxRrIV4AG9x82EOcdOzgp816BnMPpSI6WW013kX1LcejrrzDY
+      MS1iDQKBgB3w7ZKqInynPgMhgJ+srZLoDthHzfO9uRqtr2YLQrh1Q/N4KekDtbzP
+      QncUevMjMALTKR4JLwBKCq+tpaYji64KB+RQELpBqkeKrxSEHt2t7nCi3++dgpPo
+      HEpYyqQNmMSr9auJaMXjH4fvGxBVsRDZaWC7uuC/TiZLnfR6iGmF
+      -----END RSA PRIVATE KEY-----
+
+  roles:
+    - { role: "{{ role_root | default('../ansible-role-gitlab') }}" }
