@@ -1,0 +1,26 @@
+---
+
+- name: get gitlab_shell_version
+  slurp:
+    src: /home/git/gitlab/GITLAB_SHELL_VERSION
+  register: gitlab_shell_version
+  become: yes
+  become_user: git
+
+- name: update gitlab-shell
+  git:
+    repo: 'https://gitlab.com/gitlab-org/gitlab-shell.git'
+    dest: /home/git/gitlab-shell
+    version: "v{{ gitlab_shell_version['content'] | b64decode }}"
+    update: yes
+    force: yes
+  become: yes
+  become_user: git
+  notify: restart_gitlab
+
+- name: compile gitlab-shell
+  command: bin/compile
+  args:
+    chdir: /home/git/gitlab-shell
+  become: yes
+  become_user: git

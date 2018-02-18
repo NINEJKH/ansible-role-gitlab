@@ -1,0 +1,43 @@
+---
+
+- name: gitaly fix pre-9.4
+  replace:
+    path: /home/git/gitaly/config.toml
+    regexp: '^(.*)\[\[storages\]\](.*)$'
+    replace: '\1[[storage]]\2'
+  become: yes
+  become_user: git
+
+- name: get gitlab_gitaly_version
+  slurp:
+    src: /home/git/gitlab/GITALY_SERVER_VERSION
+  register: gitlab_gitaly_version
+  become: yes
+  become_user: git
+
+- name: update gitlab-gitaly
+  git:
+    repo: 'https://gitlab.com/gitlab-org/gitaly.git'
+    dest: /home/git/gitaly
+    version: "v{{ gitlab_gitaly_version['content'] | b64decode }}"
+    update: yes
+    force: yes
+  become: yes
+  become_user: git
+  notify: restart_gitlab
+
+- name: compile gitaly
+  command: make
+  args:
+    chdir: /home/git/gitaly
+  become: yes
+  become_user: git
+
+- name: fix perms
+  file:
+    path: /home/git/gitlab/tmp/sockets/private
+    state: directory
+    mode: 0700
+    owner: git
+    group: git
+  become: yes
