@@ -6,7 +6,9 @@ production: &base
   ## GitLab settings
   gitlab:
     host: {{ gitlab_fqdn }}
+
     port: {% if gitlab_enable_ssl | default(true) | bool %}443{% else %}80{% endif %}
+
     https: {% if gitlab_enable_ssl | default(true) | bool %}true{% else %}false{% endif %}
 
     trusted_proxies:
