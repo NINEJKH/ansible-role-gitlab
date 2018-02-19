@@ -11,7 +11,7 @@ $ ./test.sh -i 192.168.1.159 -u vbox
 ## Requirements
 
 * working MySQL server
-  * `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_large_prefix=1;`
+  * `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_large_prefix=1, log_bin_trust_function_creators = 1;`
 * working Redis server
 
 ## Role Variables
@@ -20,7 +20,7 @@ $ ./test.sh -i 192.168.1.159 -u vbox
 
 go_version: 1.8.7
 
-gitlab_version: 9-3-stable
+gitlab_version: 9-4-stable
 
 gitlab_fqdn: gitlab
 
