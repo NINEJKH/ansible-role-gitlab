@@ -8,8 +8,6 @@
 
     gitlab_mysql_pass: farm
 
-    gitlab_unicorn_worker_processes: 1
-
     gitlab_enable_ssl: no
 
     gitlab_db_key_base: 123456789012345678901234567890
