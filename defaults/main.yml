@@ -10,7 +10,7 @@ gitlab_root_email: root@gitlab
 
 gitlab_root_password: Foobar_2k18
 
-gitlab_unicorn_worker_processes: 3
+gitlab_unicorn_worker_processes: "{{ ansible_processor_vcpus + 1 }}"
 
 gitlab_redis_url: redis://127.0.0.1:6379
 
