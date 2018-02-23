@@ -38,7 +38,9 @@ production: &base
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
-    # ssh_host: ssh.host_example.com
+{% if gitlab_config_ssh_host is defined %}
+    ssh_host: {{ gitlab_config_ssh_host }}
+{% endif %}
 
     # Relative URL support
     # WARNING: We recommend using an FQDN to host GitLab in a root path instead
@@ -421,13 +423,13 @@ production: &base
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
       # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
       #     app_secret: 'YOUR_CLIENT_SECRET',
       #     args: {
       #             scope: 'aq:name email~rs address aq:push'
-      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # callback_url: 'YOUR_CALLBACK_URL'
       #           }
       #   }
       # - { name: 'github',
@@ -508,6 +510,10 @@ production: &base
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
+        failure_count_threshold: 10 # number of failures before stopping attempts
+        failure_wait_time: 30 # Seconds after an access failure before allowing access again
+        failure_reset_time: 1800 # Time in seconds to expire failures
+        storage_timeout: 30 # Time in seconds to wait before aborting a storage access attempt
 
   ## Backup settings
   backup:
@@ -587,6 +593,12 @@ production: &base
     ip_whitelist:
       - 127.0.0.0/8
 
+    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    sidekiq_exporter:
+    #  enabled: true
+    #  address: localhost
+    #  port: 3807
+
   #
   # 5. Extra customization
   # ==========================
@@ -640,6 +652,13 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+        failure_count_threshold: 999999
+        failure_wait_time: 0
+        storage_timeout: 30
+      broken:
+        path: tmp/tests/non-existent-repositories
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+
   gitaly:
     enabled: true
     token: secret
