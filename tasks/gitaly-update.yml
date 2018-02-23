@@ -8,6 +8,20 @@
   become: yes
   become_user: git
 
+- name: gitaly migration 9.5
+  blockinfile:
+    path: /home/git/gitaly/config.toml
+    block: |
+      
+      [gitaly-ruby]
+      dir = "/home/git/gitaly/ruby"
+
+      [gitlab-shell]
+      dir = "/home/git/gitlab-shell"
+      
+  become: yes
+  become_user: git
+
 - name: get gitlab_gitaly_version
   slurp:
     src: /home/git/gitlab/GITALY_SERVER_VERSION

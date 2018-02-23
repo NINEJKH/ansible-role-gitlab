@@ -2,7 +2,7 @@
 
 go_version: 1.8.7
 
-gitlab_version: 9-4-stable
+gitlab_version: 9-5-stable
 
 gitlab_fqdn: gitlab
 
@@ -23,3 +23,5 @@ gitlab_mysql_pass: ''
 gitlab_mysql_host: 127.0.0.1
 
 gitlab_enable_ssl: yes
+
+#gitlab_config_ssh_host:
