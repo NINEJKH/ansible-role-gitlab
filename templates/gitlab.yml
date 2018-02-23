@@ -35,10 +35,10 @@ production: &base
 
     https: {% if gitlab_enable_ssl | default(true) | bool %}true{% else %}false{% endif %}
 
+{% if gitlab_config_ssh_host is defined %}
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
-{% if gitlab_config_ssh_host is defined %}
     ssh_host: {{ gitlab_config_ssh_host }}
 {% endif %}
 
