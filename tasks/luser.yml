@@ -7,3 +7,16 @@
     shell: /bin/bash
     home: /home/git
   become: yes
+
+- name: check for docker
+  command: dpkg -L docker-ce
+  register: gitlab_docker_check
+  ignore_errors: yes
+
+- name: add git user to docker group
+  user:
+    name: git
+    append: yes
+    groups:
+      - docker
+  become: yes

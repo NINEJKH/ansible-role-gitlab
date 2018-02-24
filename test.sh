@@ -26,15 +26,16 @@ cat <<EOF
 Usage: ${0##*/} OPTIONS
 test role
 
-    -h          display this help and exit
-    -i STRING   target host to run against (default: 127.0.0.1)
-    -T          turbo mode
-    -u STRING   connect as this user (default: current user)
+    -h            display this help and exit
+    -i STRING     target host to run against (default: 127.0.0.1)
+    -P STRING     path to playbook
+    -T            turbo mode
+    -u STRING     connect as this user (default: current user)
 EOF
 }
 
 OPTIND=1
-while getopts "hi:Tu:" opt; do
+while getopts "hi:P:Tu:" opt; do
   case "${opt}" in
     h )
       usage
@@ -42,6 +43,9 @@ while getopts "hi:Tu:" opt; do
       ;;
     i )
       TARGET_HOST="${OPTARG}"
+      ;;
+    P )
+      PLAYBOOK_FILE="${OPTARG}"
       ;;
     T )
       TURBO_MODE=1
@@ -57,10 +61,14 @@ while getopts "hi:Tu:" opt; do
 done
 shift "$((OPTIND-1))"
 
+ansible_playbook_args=()
+
 if [[ ! -z "${TRAVIS}" ]]; then
   unset GEM_HOME
   unset GEM_PATH
   unset GOROOT
+
+  ansible_playbook_args+=( "--syntax-check" )
 fi
 
 if [[ -z "${TARGET_HOST}" ]]; then
@@ -76,9 +84,13 @@ if [[ -z "${CONNECTION}" ]]; then
   CONNECTION="smart"
 fi
 
+if [[ -z "${PLAYBOOK_FILE}" ]]; then
+  PLAYBOOK_FILE="${__DIR__}/tests/test.yml"
+fi
+
 role_root="$(pwd)"
 
-if [[ -z "${TURBO_MODE}" ]]; then
+if [[ -z "${TURBO_MODE}" ]] || [[ ! -d .roles ]]; then
   consolelog "installing requirements"
   for required_role in  "${required_roles[@]}"; do
     ansible-galaxy install "${required_role}"
@@ -91,7 +103,8 @@ ansible-playbook \
   --user="${CONNECT_USER}" \
   --extra-vars="role_root=${role_root}" \
   --connection="${CONNECTION}" \
-  tests/test.yml
+  "${ansible_playbook_args[@]}" \
+  "${PLAYBOOK_FILE}"
 
 if [[ -z "${TURBO_MODE}" ]]; then
   consolelog "running role as playbook #2"
@@ -100,10 +113,11 @@ if [[ -z "${TURBO_MODE}" ]]; then
     --user="${CONNECT_USER}" \
     --extra-vars="role_root=${role_root}" \
     --connection="${CONNECTION}" \
-    tests/test.yml
+    "${ansible_playbook_args[@]}" \
+    "${PLAYBOOK_FILE}"
 fi
 
-if [[ "${CONNECTION}" == "local" ]]; then
+if [[ "${CONNECTION}" == "local" ]] && [[ -z "${TRAVIS}" ]]; then
   echo "127.0.0.1 gitlab" | sudo tee -a /etc/hosts
   curl -if http://gitlab
 

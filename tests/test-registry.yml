@@ -10,7 +10,7 @@
 
     gitlab_enable_ssl: no
 
-    gitlab_enable_registry: no
+    gitlab_enable_registry: yes
 
     gitlab_db_key_base: 123456789012345678901234567890
 

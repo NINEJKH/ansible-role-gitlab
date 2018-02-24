@@ -24,4 +24,6 @@ gitlab_mysql_host: 127.0.0.1
 
 gitlab_enable_ssl: yes
 
+gitlab_enable_registry: no
+
 #gitlab_config_ssh_host:

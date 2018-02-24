@@ -80,4 +80,7 @@
 
 - import_tasks: vhost.yml
 
+- import_tasks: registry.yml
+  when: gitlab_enable_registry | default(false) | bool
+
 - import_tasks: post.yml

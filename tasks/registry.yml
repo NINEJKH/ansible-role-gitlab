@@ -1,0 +1,61 @@
+---
+
+- name: install pyOpenSSL
+  apt:
+    name: python-openssl
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: create /certs
+  file:
+    state: directory
+    path: /home/git/certs
+  become: yes
+  become_user: git
+
+- name: create registry-auth.key
+  openssl_privatekey:
+    path: /home/git/certs/registry-auth.key
+  become: yes
+  become_user: git
+
+- name: create registry-auth.csr
+  openssl_csr:
+    path: /home/git/certs/registry-auth.csr
+    privatekey_path: /home/git/certs/registry-auth.key
+    common_name: gitlab-issuer
+  become: yes
+  become_user: git
+
+- name: create registry-auth cert
+  openssl_certificate:
+    path: /home/git/certs/registry-auth.crt
+    privatekey_path: /home/git/certs/registry-auth.key
+    csr_path: /home/git/certs/registry-auth.csr
+    provider: selfsigned
+  become: yes
+  become_user: git
+
+- name: add registry vhost
+  template:
+    src: vhost-registry.conf
+    dest: /etc/nginx/vhosts/gitlab-registry.conf
+    mode: 0644
+  become: yes
+  notify: restart_nginx
+
+- name: add systemd service
+  template:
+    src: registry.service.ini
+    dest: /lib/systemd/system/docker-registry.service
+    mode: 0644
+  become: yes
+  when: gitlab_systemd_check | succeeded
+  notify: restart_docker_registry
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  when: gitlab_systemd_check | succeeded
+  become: yes
