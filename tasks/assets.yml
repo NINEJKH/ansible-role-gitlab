@@ -22,7 +22,16 @@
   become: yes
   become_user: git
   async: 1800
-  poll: 60
+  poll: 0
+  register: async_gitlab_compile_assets
+
+- name: poll compile assets
+  async_status:
+    jid: "{{ async_gitlab_compile_assets.ansible_job_id }}"
+  register: async_gitlab_compile_assets_result
+  until: async_gitlab_compile_assets_result.finished
+  retries: 30
+  delay: 60
 
 - name: compile gettext
   command: bundle exec rake gettext:compile RAILS_ENV=production
