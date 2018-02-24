@@ -95,7 +95,8 @@ production: &base
       wiki: true
       snippets: true
       builds: false
-      container_registry: false
+      container_registry: {% if gitlab_enable_registry | default(false) | bool %}true{% else %}false{% endif %}
+
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -203,13 +204,17 @@ production: &base
       cron: "0 * * * *"
 
   registry:
+{% if gitlab_enable_registry | default(false) | bool %}
+    enabled: true
+    host: registry.{{ gitlab_fqdn }}
+    api_url: http://localhost:5000/
+    key: /home/git/certs/registry-auth.key
+    path: shared/registry
+    issuer: gitlab-issuer
+{% else %}
     enabled: false
-    # host: registry.example.com
-    # port: 5005
-    # api_url: http://localhost:5000/ # internal address to the registry, will be used by GitLab to directly communicate with API
-    # key: config/registry.key
-    # path: shared/registry
-    # issuer: gitlab-issuer
+{% endif %}
+
 
   #
   # 2. GitLab CI settings
@@ -537,6 +542,7 @@ production: &base
       remote_directory: '{{ gitlab_backup_remote_directory }}'
       {% endif %}
 {% endif %}
+
 
   ## GitLab Shell settings
   gitlab_shell:

@@ -2,4 +2,4 @@
 
 go_version_string_match: go version go{{ go_version }}
 
-gitlab_certbot_cmd: certbot certonly -n -m '{{ gitlab_root_email }}' --agree-tos --rsa-key-size 4096 -q --renew-by-default --webroot -w /var/www/gitlab/ -d {{ gitlab_fqdn }} -d www.{{ gitlab_fqdn }} -d registry.{{ gitlab_fqdn }}
+gitlab_certbot_cmd: certbot certonly -n -m '{{ gitlab_root_email }}' --agree-tos --rsa-key-size 4096 -q --renew-by-default --webroot -w /var/www/gitlab/ -d {{ gitlab_fqdn }} -d www.{{ gitlab_fqdn }} {% if gitlab_enable_registry | default(false) | bool %}-d registry.{{ gitlab_fqdn }}{% endif %}

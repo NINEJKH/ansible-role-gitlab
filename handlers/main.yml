@@ -6,3 +6,10 @@
     enabled: yes
     state: restarted
   become: yes
+
+- name: restart_docker_registry
+  service:
+    name: docker-registry
+    enabled: yes
+    state: restarted
+  become: yes
