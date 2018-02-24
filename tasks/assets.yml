@@ -28,6 +28,8 @@
 - name: poll compile assets
   async_status:
     jid: "{{ async_gitlab_compile_assets.ansible_job_id }}"
+  become: yes
+  become_user: git
   register: async_gitlab_compile_assets_result
   until: async_gitlab_compile_assets_result.finished
   retries: 30
