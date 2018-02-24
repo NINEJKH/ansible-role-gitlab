@@ -21,6 +21,8 @@
     chdir: /home/git/gitlab
   become: yes
   become_user: git
+  async: 1800
+  poll: 60
 
 - name: compile gettext
   command: bundle exec rake gettext:compile RAILS_ENV=production
