@@ -61,10 +61,14 @@ while getopts "hi:P:Tu:" opt; do
 done
 shift "$((OPTIND-1))"
 
+ansible_playbook_args=()
+
 if [[ ! -z "${TRAVIS}" ]]; then
   unset GEM_HOME
   unset GEM_PATH
   unset GOROOT
+
+  ansible_playbook_args+=( "--syntax-check" )
 fi
 
 if [[ -z "${TARGET_HOST}" ]]; then
@@ -99,6 +103,7 @@ ansible-playbook \
   --user="${CONNECT_USER}" \
   --extra-vars="role_root=${role_root}" \
   --connection="${CONNECTION}" \
+  "${ansible_playbook_args[@]}" \
   "${PLAYBOOK_FILE}"
 
 if [[ -z "${TURBO_MODE}" ]]; then
@@ -108,10 +113,11 @@ if [[ -z "${TURBO_MODE}" ]]; then
     --user="${CONNECT_USER}" \
     --extra-vars="role_root=${role_root}" \
     --connection="${CONNECTION}" \
+    "${ansible_playbook_args[@]}" \
     "${PLAYBOOK_FILE}"
 fi
 
-if [[ "${CONNECTION}" == "local" ]]; then
+if [[ "${CONNECTION}" == "local" ]] && [[ -z "${TRAVIS}" ]]; then
   echo "127.0.0.1 gitlab" | sudo tee -a /etc/hosts
   curl -if http://gitlab
 
