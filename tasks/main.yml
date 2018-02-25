@@ -78,9 +78,9 @@
 - import_tasks: ssl.yml
   when: gitlab_enable_ssl | default(true) | bool
 
-- import_tasks: vhost.yml
+- include_tasks: vhost.yml
 
-- import_tasks: registry.yml
+- include_tasks: registry.yml
   when: gitlab_enable_registry | default(false) | bool
 
 - import_tasks: post.yml
