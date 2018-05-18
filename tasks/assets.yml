@@ -7,14 +7,6 @@
   become: yes
   become_user: git
 
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/38457
-- name: yarn bug 9.4 to 9.5
-  command: yarn add ajv@^4.0.0
-  args:
-    chdir: /home/git/gitlab
-  become: yes
-  become_user: git
-
 - name: compile assets
   command: bundle exec rake gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
   args:
