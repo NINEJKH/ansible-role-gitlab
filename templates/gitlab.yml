@@ -529,18 +529,18 @@ production: &base
     upload:
       connection:
         provider: {{ gitlab_backup_provider }}
-        {% if gitlab_backup_region is defined %}
+{% if gitlab_backup_region is defined %}
         region: {{ gitlab_backup_region }}
-        {% endif %}
-        {% if gitlab_backup_aws_access_key_id is defined %}
+{% endif %}
+{% if gitlab_backup_aws_access_key_id is defined %}
         aws_access_key_id: {{ gitlab_backup_aws_access_key_id }}
-        {% endif %}
-        {% if gitlab_backup_aws_secret_access_key is defined %}
+{% endif %}
+{% if gitlab_backup_aws_secret_access_key is defined %}
         aws_secret_access_key: '{{ gitlab_backup_aws_secret_access_key }}'
-        {% endif %}
-      {% if gitlab_backup_remote_directory is defined %}
+{% endif %}
+{% if gitlab_backup_remote_directory is defined %}
       remote_directory: '{{ gitlab_backup_remote_directory }}'
-      {% endif %}
+{% endif %}
 {% endif %}
 
 
