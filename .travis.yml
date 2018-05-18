@@ -11,9 +11,17 @@ env:
 
 # Install ansible
 addons:
-  apt:         
+  apt:
+    sources:
+      - mysql-5.7-trusty          
     packages:
       - python-setuptools
+      - mysql-server
+      - mysql-client
+
+services:
+  - mysql
+  - redis-server
 
 before_install:
   - printf '[mysqld]\ninnodb_large_prefix = 1\ninnodb_file_format = "Barracuda"\ninnodb_file_per_table = 1\n' | sudo tee /etc/mysql/conf.d/gitlab.cnf
@@ -37,6 +45,10 @@ install:
 
   # Check ansible version
   - ansible --version
+
+before_script:
+  - sudo mysql -e "CREATE DATABASE gitlabhq_production;"
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('farm') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
 
 script: ./test.sh
 
