@@ -20,7 +20,7 @@ $ ./test.sh -i 192.168.56.103 -u vbox
 
 go_version: 1.8.7
 
-gitlab_version: 10-0-stable
+gitlab_version: 10-1-stable
 
 gitlab_fqdn: gitlab
 
