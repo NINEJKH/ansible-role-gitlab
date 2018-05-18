@@ -90,6 +90,6 @@
     user: root
     name: "registry gc"
     minute: 0
-    hour: 2
+    hour: 0
     job: "docker exec -it registry docker-distribution-pruner -config=/etc/docker/registry/config.yml -delete -soft-delete=false -verbose=false > /dev/null"
   become: yes
