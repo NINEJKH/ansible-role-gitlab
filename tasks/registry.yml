@@ -59,3 +59,37 @@
   command: systemctl daemon-reload
   when: gitlab_systemd_check | succeeded
   become: yes
+
+- cron:
+    cron_file: docker-registry
+    user: root
+    name: MAILTO
+    env: yes
+    value: "{{ gitlab_root_email }}"
+  become: yes
+
+- cron:
+    cron_file: docker-registry
+    user: root
+    name: MAILFROM
+    env: yes
+    value: "{{ ansible_hostname }}@{{ gitlab_fqdn }}"
+  become: yes
+
+- cron:
+    cron_file: docker-registry
+    user: root
+    name: PATH
+    env: yes
+    value: "/usr/local/bin:/usr/bin:/bin"
+  become: yes
+
+- name: add registry gc
+  cron:
+    cron_file: docker-registry
+    user: root
+    name: "registry gc"
+    minute: 0
+    hour: 2
+    job: "docker exec -it registry docker-distribution-pruner -config=/etc/docker/registry/config.yml -delete -soft-delete=false -verbose=false > /dev/null"
+  become: yes
