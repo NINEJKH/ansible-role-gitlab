@@ -29,4 +29,5 @@
     - cmake
     - libkrb5-dev
     - libmysqlclient-dev
+    - rsync
   become: yes
