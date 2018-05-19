@@ -30,7 +30,7 @@
     user: git
     name: "auto backups"
     minute: 0
-    hour: 0
+    hour: 2
     job: "cd /home/git/gitlab && bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1"
   become: yes
 
