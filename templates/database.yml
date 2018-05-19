@@ -4,7 +4,7 @@
 production:
   adapter: mysql2
   encoding: utf8mb4
-  collation: utf8mb4_unicode_ci
+  collation: utf8mb4_general_ci
   reconnect: false
   database: {{ gitlab_mysql_db }}
   pool: 10
