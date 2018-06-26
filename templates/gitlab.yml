@@ -189,7 +189,7 @@ production: &base
     # base_dir: uploads/-/system
     object_store:
       enabled: false
-      # remote_directory: uploads # Bucket name
+      remote_directory: uploads # Bucket name
       # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
       # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
@@ -217,6 +217,8 @@ production: &base
     artifacts_server: false
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
+    admin:
+      address: unix:/home/git/gitlab/tmp/sockets/private/pages-admin.socket # TCP connections are supported too (e.g. tcp://host:port)
 
   ## Mattermost
   ## For enabling Add to Mattermost button
