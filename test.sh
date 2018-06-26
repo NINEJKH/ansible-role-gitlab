@@ -27,7 +27,7 @@ EOF
 }
 
 OPTIND=1
-while getopts "hi:P:u:" opt; do
+while getopts "hi:P:Tu:" opt; do
   case "${opt}" in
     h )
       usage

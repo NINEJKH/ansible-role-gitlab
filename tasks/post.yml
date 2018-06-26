@@ -37,4 +37,4 @@
 - name: reload systemd
   command: systemctl daemon-reload
   become: yes
-  when: gitlab_systemd_check | success
+  when: gitlab_systemd_check is success
