@@ -13,14 +13,6 @@ source "${__DIR__}/.bash/functions.shlib"
 set -E
 trap 'throw_exception' ERR
 
-required_roles=(
-  NINEJKH.libre2
-  NINEJKH.git
-  NINEJKH.ruby
-  lifeofguenter.nodejs
-  lifeofguenter.nginx
-)
-
 usage() {
 cat <<EOF
 Usage: ${0##*/} OPTIONS
@@ -92,9 +84,7 @@ role_root="$(pwd)"
 
 if [[ -z "${TURBO_MODE}" ]] || [[ ! -d .roles ]]; then
   consolelog "installing requirements"
-  for required_role in  "${required_roles[@]}"; do
-    ansible-galaxy install "${required_role}"
-  done
+  ansible-galaxy install -r "${__DIR__}/requirements.yml"
 fi
 
 consolelog "running role as playbook #1"

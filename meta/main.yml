@@ -5,7 +5,7 @@ galaxy_info:
   description: Installs Gitlab on Debian-like systems.
   company: 9JKH (Pty) Ltd.
   license: MIT
-  min_ansible_version: 2.4
+  min_ansible_version: 2.5
   platforms:
     - name: Ubuntu
       versions:
@@ -23,7 +23,7 @@ dependencies:
     version: 0.1.4
 
   - src: NINEJKH.git
-    version: 0.1.4
+    version: 0.2.0
 
   - src: NINEJKH.ruby
     version: 0.1.5

@@ -20,7 +20,7 @@ $ ./test.sh -i 192.168.56.103 -u vbox
 
 go_version: 1.8.7
 
-gitlab_version: 10-7-stable
+gitlab_version: 10-8-stable
 
 gitlab_fqdn: gitlab
 
@@ -70,6 +70,12 @@ gitlab_backup_remote_directory:
   roles:
     - { role: NINEJKH.gitlab }
 ```
+
+## Todos
+
+* https://unix.stackexchange.com/questions/67334/openssh-how-to-end-a-match-block
+* https://unix.stackexchange.com/questions/344444/match-multiple-users-in-sshd-config
+* https://gitar.io/help/administration/operations/fast_ssh_key_lookup
 
 ## License
 

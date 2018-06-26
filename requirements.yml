@@ -1,0 +1,14 @@
+- src: NINEJKH.libre2
+  version: 0.1.4
+
+- src: NINEJKH.git
+  version: 0.2.0
+
+- src: NINEJKH.ruby
+  version: 0.1.5
+
+- src: lifeofguenter.nodejs
+  version: 8.0.0
+
+- src: lifeofguenter.nginx
+  version: 1.2.3
